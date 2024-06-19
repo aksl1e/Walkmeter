@@ -21,15 +21,15 @@ Future<void> initializeService() async {
 
   await service.configure(
       androidConfiguration: AndroidConfiguration(
-        // this will be executed when app is in foreground or background in separated isolate
-        onStart: onStart,
-
-        // auto start service
-        autoStart: true,
-        isForegroundMode: true,
-        // this must match with notification channel you created above.
-        foregroundServiceNotificationId: notificationId,
-      ),
+          // this will be executed when app is in foreground or background in separated isolate
+          onStart: onStart,
+          // auto start service
+          autoStart: true,
+          isForegroundMode: true,
+          // this must match with notification channel you created above.
+          foregroundServiceNotificationId: notificationId,
+          initialNotificationTitle: 'Walkmeter',
+          initialNotificationContent: 'Running'),
       iosConfiguration: IosConfiguration());
 }
 

@@ -27,6 +27,24 @@ final class WalkmeterStatusChanged extends WalkmeterEvent {
 
 final class WalkmeterDurationChanged extends WalkmeterEvent {}
 
-final class WalkmeterStopped extends WalkmeterEvent {}
+final class WalkmeterDayGoalChanged extends WalkmeterEvent {
+  const WalkmeterDayGoalChanged(this.newDayGoal);
 
-final class WalkmeterStarted extends WalkmeterEvent {}
+  final int newDayGoal;
+
+  @override
+  List<Object> get props => [newDayGoal];
+}
+
+final class WalkmeterStepLengthMetersChanged extends WalkmeterEvent {
+  const WalkmeterStepLengthMetersChanged(this.newStepLengthCM);
+
+  final int newStepLengthCM;
+
+  @override
+  List<Object> get props => [newStepLengthCM];
+}
+
+final class WalkmeterActiveChanged extends WalkmeterEvent {}
+
+final class WalkmeterStateFromPrefsRequested extends WalkmeterEvent {}

@@ -7,10 +7,9 @@ enum Status { counting, stopped, unknown }
 final class WalkmeterState extends Equatable {
   const WalkmeterState({
     this.steps = 0,
-    this.dayGoal = 0,
+    this.dayGoal = 4000,
     this.pedostatus = Pedostatus.unknown,
-    this.status = Status.unknown,
-    this.stepLengthMeters = 0,
+    this.stepLengthCM = 45,
     this.distanceKM = 0.0,
     this.walkDuration = const Duration(),
     this.isActive = true,
@@ -19,8 +18,7 @@ final class WalkmeterState extends Equatable {
   final int steps;
   final int dayGoal;
   final Pedostatus pedostatus;
-  final Status status;
-  final int stepLengthMeters;
+  final int stepLengthCM;
   final double distanceKM;
   final Duration walkDuration;
   final bool isActive;
@@ -29,8 +27,7 @@ final class WalkmeterState extends Equatable {
     int? steps,
     int? dayGoal,
     Pedostatus? pedostatus,
-    Status? status,
-    int? stepLengthMeters,
+    int? stepLengthCM,
     double? distanceKM,
     Duration? walkDuration,
     bool? isActive,
@@ -39,8 +36,7 @@ final class WalkmeterState extends Equatable {
       steps: steps ?? this.steps,
       dayGoal: dayGoal ?? this.dayGoal,
       pedostatus: pedostatus ?? this.pedostatus,
-      status: status ?? this.status,
-      stepLengthMeters: stepLengthMeters ?? this.stepLengthMeters,
+      stepLengthCM: stepLengthCM ?? this.stepLengthCM,
       distanceKM: distanceKM ?? this.distanceKM,
       walkDuration: walkDuration ?? this.walkDuration,
       isActive: isActive ?? this.isActive,
@@ -49,5 +45,5 @@ final class WalkmeterState extends Equatable {
 
   @override
   List<Object> get props =>
-      [steps, dayGoal, pedostatus, status, distanceKM, walkDuration, isActive];
+      [steps, dayGoal, pedostatus, distanceKM, walkDuration, isActive];
 }
