@@ -3,7 +3,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:pedometer/pedometer.dart';
+import 'package:pedometer_2/pedometer_2.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'app.dart';
 
 const notificationChannelId = 'walkmeter_notification';
@@ -11,9 +12,10 @@ const notificationId = 666; // Deadly!
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initializeService();
-
-  runApp(const App());
+  if (await Permission.activityRecognition.request().isGranted) {
+    await initializeService();
+    runApp(const App());
+  }
 }
 
 Future<void> initializeService() async {
@@ -33,12 +35,13 @@ Future<void> initializeService() async {
       iosConfiguration: IosConfiguration());
 }
 
+@pragma('vm:entry-point')
 void onStart(ServiceInstance service) {
   DartPluginRegistrant.ensureInitialized();
 
-  Stream<StepCount> pedometerStepCount = Pedometer.stepCountStream;
+  Stream<int> pedometerStepCount = Pedometer().stepCountStream();
   Stream<PedestrianStatus> pedestrianStatusStream =
-      Pedometer.pedestrianStatusStream;
+      Pedometer().pedestrianStatusStream();
 
   Timer.periodic(const Duration(seconds: 1), (timer) {
     service.invoke(
@@ -47,25 +50,25 @@ void onStart(ServiceInstance service) {
     );
   });
 
-  pedometerStepCount
-      .listen((event) => service.invoke(
-            'updateSteps',
-            {
-              "steps": event.steps.toString(),
-            },
-          ))
-      .onError((event) => service.invoke(
-            'updateSteps',
-            {
-              "steps": 'error',
-            },
-          ));
+  pedometerStepCount.listen((steps) {
+    service.invoke(
+      'updateSteps',
+      {
+        "steps": steps.toString(),
+      },
+    );
+  }).onError((event) => service.invoke(
+        'updateSteps',
+        {
+          "steps": 'error',
+        },
+      ));
 
   pedestrianStatusStream
-      .listen((event) => service.invoke(
+      .listen((status) => service.invoke(
             'updateStatus',
             {
-              "status": event.status.toString(),
+              "status": status.name.toString(),
             },
           ))
       .onError((event) => service.invoke(

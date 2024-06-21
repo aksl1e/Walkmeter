@@ -2,10 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:walkmeter/walkmeter/bloc/walkmeter_bloc.dart';
 
-class WalkmeterView extends StatelessWidget {
+class WalkmeterView extends StatefulWidget {
   const WalkmeterView({super.key});
 
+  @override
+  State<WalkmeterView> createState() => _WalkmeterViewState();
+}
+
+class _WalkmeterViewState extends State<WalkmeterView>
+    with WidgetsBindingObserver {
   format(Duration d) => d.toString().split('.').first.padLeft(8, "0");
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,5 +122,17 @@ class WalkmeterView extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    context.read<WalkmeterBloc>().add(WalkmeterStateToPrefsSaved());
+  }
+
+  @override
+  void dispose() {
+    context.read<WalkmeterBloc>().add(WalkmeterDisposed());
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 }

@@ -47,4 +47,8 @@ final class WalkmeterStepLengthMetersChanged extends WalkmeterEvent {
 
 final class WalkmeterActiveChanged extends WalkmeterEvent {}
 
+final class WalkmeterStateToPrefsSaved extends WalkmeterEvent {}
+
 final class WalkmeterStateFromPrefsRequested extends WalkmeterEvent {}
+
+final class WalkmeterDisposed extends WalkmeterEvent {}

@@ -34,7 +34,9 @@ class WalkmeterBloc extends Bloc<WalkmeterEvent, WalkmeterState> {
     on<WalkmeterDayGoalChanged>(_onDayGoalChanged);
     on<WalkmeterStepLengthMetersChanged>(_onStepLengthMetersChanged);
     on<WalkmeterActiveChanged>(_onActiveChanged);
+    on<WalkmeterStateToPrefsSaved>(_onStateToPrefsSaved);
     on<WalkmeterStateFromPrefsRequested>(_onStateFromPrefsRequested);
+    on<WalkmeterDisposed>(_onDisposed);
   }
 
   void _initPedometerStream() {
@@ -110,10 +112,7 @@ class WalkmeterBloc extends Bloc<WalkmeterEvent, WalkmeterState> {
         isActive: false,
       ));
 
-      await prefs.setInt('steps', state.steps);
-      await prefs.setInt('dayGoal', state.dayGoal);
-      await prefs.setInt('stepLength', state.stepLengthCM);
-      await prefs.setString('walkDuration', state.walkDuration.toString());
+      add(WalkmeterStateToPrefsSaved());
     } else {
       int? prefsSteps = prefs.getInt('steps');
       int? prefsDayGoal = prefs.getInt('dayGoal');
@@ -128,6 +127,15 @@ class WalkmeterBloc extends Bloc<WalkmeterEvent, WalkmeterState> {
         isActive: true,
       ));
     }
+  }
+
+  FutureOr<void> _onStateToPrefsSaved(
+      WalkmeterStateToPrefsSaved event, Emitter<WalkmeterState> emit) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('steps', state.steps);
+    await prefs.setInt('dayGoal', state.dayGoal);
+    await prefs.setInt('stepLength', state.stepLengthCM);
+    await prefs.setString('walkDuration', state.walkDuration.toString());
   }
 
   FutureOr<void> _onStateFromPrefsRequested(
@@ -146,5 +154,11 @@ class WalkmeterBloc extends Bloc<WalkmeterEvent, WalkmeterState> {
       stepLengthCM: prefsStepLength,
       walkDuration: parseTime(prefsWalkDuration!),
     ));
+  }
+
+  FutureOr<void> _onDisposed(
+      WalkmeterDisposed event, Emitter<WalkmeterState> emit) {
+    FlutterBackgroundService().invoke('stopService');
+    add(WalkmeterStateToPrefsSaved());
   }
 }

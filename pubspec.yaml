@@ -1,7 +1,7 @@
 name: walkmeter
 description: "Test app for interview on rabota.by"
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.1+1
 
 environment:
   sdk: '>=3.4.1 <4.0.0'
@@ -12,10 +12,11 @@ dependencies:
   flutter_bloc:
   equatable:
   bloc:
-  pedometer:
+  pedometer_2: ^5.0.3
   flutter_background_service:
   shared_preferences: ^2.2.3
   duration: ^3.0.13
+  permission_handler: ^11.3.1
 
 dev_dependencies:
   flutter_test:
